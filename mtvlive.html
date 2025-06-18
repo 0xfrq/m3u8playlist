@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ClearKey DASH Player</title>
+  <script src="https://cdn.jsdelivr.net/npm/shaka-player@4.8.0/dist/shaka-player.compiled.min.js"></script>
+</head>
+<body>
+  <h2>MTV Live ClearKey Stream</h2>
+  <video id="video" width="720" controls autoplay></video>
+
+  <script>
+    async function initPlayer() {
+      const video = document.getElementById('video');
+      const manifestUri = 'https://atemecdnbalancer-voe.sysln.id/live/eds/MTVLiveHD/mpd/MTVLiveHD.mpd';
+
+      const player = new shaka.Player(video);
+
+      // Set custom user-agent if needed (in headers, not possible in browsers directly)
+      // But not required here — works with regular browser agent
+
+      // Attach ClearKey
+      player.configure({
+        drm: {
+          clearKeys: {
+            // Format: key ID: key (both in hex)
+            'fd2992f9397c491497015b57cd1c8747': '1dcd4c7b242b479fd9f1899120fd1f2f'
+          }
+        }
+      });
+
+      try {
+        await player.load(manifestUri);
+        console.log('The video has now been loaded!');
+      } catch (error) {
+        console.error('Error loading video:', error);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', initPlayer);
+  </script>
+</body>
+</html>
